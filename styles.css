@@ -1,4 +1,4 @@
-/* Rion's Puzzle - Beautiful Child-Friendly Styling */
+/* Rion's Dinosaur Puzzle - Jigsaw Game Styling */
 * {
     margin: 0;
     padding: 0;
@@ -149,7 +149,7 @@ body {
     color: #7F8C8D;
 }
 
-#current-level, #current-score {
+#current-level, #pieces-placed, #total-pieces {
     color: #E74C3C;
     font-size: 1.2rem;
 }
@@ -174,22 +174,43 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     position: relative;
+    padding: 80px 20px 100px;
 }
 
-#puzzle-container {
+#puzzle-board {
     flex: 1;
-    padding: 80px 20px 100px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 3px dashed #95A5A6;
+    border-radius: 20px;
+    margin: 20px;
+    position: relative;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 400px;
+    backdrop-filter: blur(5px);
 }
 
-#3d-scene {
-    flex: 1;
-    background: linear-gradient(45deg, #2C3E50, #34495E);
-    position: relative;
+#puzzle-board.completed {
+    border-color: #27AE60;
+    background: rgba(39, 174, 96, 0.1);
+}
+
+#pieces-area {
+    height: 200px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    margin: 20px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    overflow-x: auto;
+    backdrop-filter: blur(5px);
 }
 
 .game-controls {
@@ -223,12 +244,13 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Puzzle Elements */
+/* Puzzle Pieces */
 .puzzle-piece {
     width: 80px;
     height: 80px;
-    margin: 10px;
-    border-radius: 15px;
+    background: white;
+    border: 2px solid #34495E;
+    border-radius: 10px;
     cursor: grab;
     transition: all 0.3s ease;
     display: flex;
@@ -236,6 +258,8 @@ body {
     justify-content: center;
     font-size: 2rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    user-select: none;
 }
 
 .puzzle-piece:hover {
@@ -246,18 +270,28 @@ body {
 .puzzle-piece.dragging {
     transform: scale(1.2);
     z-index: 1000;
+    opacity: 0.8;
 }
 
+.puzzle-piece.placed {
+    cursor: default;
+    border-color: #27AE60;
+    background: rgba(39, 174, 96, 0.1);
+}
+
+.puzzle-piece.snapped {
+    animation: snapIn 0.3s ease-out;
+}
+
+/* Puzzle Board Slots */
 .puzzle-slot {
-    width: 90px;
-    height: 90px;
-    border: 3px dashed #95A5A6;
-    border-radius: 15px;
-    margin: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.3);
+    width: 80px;
+    height: 80px;
+    border: 2px dashed #95A5A6;
+    border-radius: 10px;
+    margin: 5px;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
 }
 
@@ -266,13 +300,33 @@ body {
     background: rgba(39, 174, 96, 0.2);
 }
 
-.puzzle-slot.correct {
+.puzzle-slot.highlighted {
     border-color: #F39C12;
-    background: rgba(243, 156, 18, 0.2);
+    background: rgba(243, 156, 18, 0.3);
     animation: pulse 1s infinite;
 }
 
-/* Level Complete Screen */
+/* Completed Puzzle Display */
+.completed-puzzle {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+}
+
+#completed-image {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+/* Puzzle Complete Screen */
 .complete-content {
     text-align: center;
     background: rgba(255, 255, 255, 0.95);
@@ -280,16 +334,6 @@ body {
     border-radius: 25px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     animation: slideInUp 0.8s ease-out;
-}
-
-.stars-earned {
-    margin: 20px 0;
-    font-size: 2rem;
-}
-
-.star {
-    animation: twinkle 1.5s infinite;
-    margin: 0 5px;
 }
 
 .reward-dino {
@@ -306,6 +350,19 @@ body {
     border-radius: 25px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     animation: shake 0.8s ease-out;
+}
+
+/* Celebration Effects */
+.balloon {
+    animation: floatUp 4s ease-out forwards;
+}
+
+.confetti {
+    animation: fallDown 3s ease-in forwards;
+}
+
+.sparkle {
+    animation: sparkle 0.8s ease-out forwards;
 }
 
 /* Animations */
@@ -341,15 +398,53 @@ body {
     100% { color: #FF6B6B; }
 }
 
-@keyframes twinkle {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-}
-
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
+}
+
+@keyframes snapIn {
+    0% { transform: scale(1.2); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+@keyframes floatUp {
+    0% { 
+        transform: translateY(0) rotate(0deg); 
+        opacity: 1; 
+    }
+    100% { 
+        transform: translateY(-100vh) rotate(360deg); 
+        opacity: 0; 
+    }
+}
+
+@keyframes fallDown {
+    0% { 
+        transform: translateY(-10px) rotate(0deg); 
+        opacity: 1; 
+    }
+    100% { 
+        transform: translateY(100vh) rotate(720deg); 
+        opacity: 0; 
+    }
+}
+
+@keyframes sparkle {
+    0% { 
+        transform: scale(0) rotate(0deg); 
+        opacity: 1; 
+    }
+    50% { 
+        transform: scale(1.5) rotate(180deg); 
+        opacity: 0.8; 
+    }
+    100% { 
+        transform: scale(0) rotate(360deg); 
+        opacity: 0; 
+    }
 }
 
 /* Responsive Design */
@@ -375,8 +470,16 @@ body {
     }
     
     .puzzle-slot {
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
+    }
+    
+    #puzzle-board {
+        min-height: 300px;
+    }
+    
+    #pieces-area {
+        height: 150px;
     }
 }
 

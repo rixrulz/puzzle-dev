@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rion's Puzzle - Dinosaur Adventure!</title>
+    <title>Rion's Dinosaur Puzzle - Jigsaw Adventure!</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -12,20 +12,20 @@
         <!-- Welcome Screen -->
         <div id="welcome-screen" class="screen active">
             <div class="welcome-content">
-                <h1 class="game-title">🦕 Rion's Puzzle 🦖</h1>
+                <h1 class="game-title">🦕 Rion's Dinosaur Puzzle 🦖</h1>
                 <div class="dino-character">
                     <div class="dino-sprite">🦕</div>
                     <p class="character-name">Hi! I'm Rion!</p>
                 </div>
-                <p class="welcome-text">Ready for a dinosaur adventure?</p>
-                <button id="start-game" class="game-button">Start Adventure!</button>
+                <p class="welcome-text">Let's put together some amazing dinosaur pictures!</p>
+                <button id="start-game" class="game-button">Start Puzzling!</button>
                 <div class="instructions">
                     <h3>How to Play:</h3>
                     <ul>
-                        <li>🧩 Solve puzzles to help dinosaurs</li>
-                        <li>🎯 Learn colors, shapes, and numbers</li>
-                        <li>🌟 Complete levels to unlock new dinosaurs</li>
-                        <li>🎮 Use your mouse to drag and drop</li>
+                        <li>🧩 Drag puzzle pieces to the board</li>
+                        <li>🎯 Connect pieces to complete the picture</li>
+                        <li>🌟 Unlock new dinosaur puzzles</li>
+                        <li>🎮 Use your mouse to move pieces</li>
                     </ul>
                 </div>
             </div>
@@ -35,71 +35,69 @@
         <div id="game-screen" class="screen">
             <div class="game-header">
                 <div class="level-info">
-                    <span class="level-label">Level:</span>
+                    <span class="level-label">Puzzle:</span>
                     <span id="current-level">1</span>
                 </div>
                 <div class="score-info">
-                    <span class="score-label">Stars:</span>
-                    <span id="current-score">0</span>
-                    <span id="total-stars">0</span>
+                    <span class="score-label">Pieces:</span>
+                    <span id="pieces-placed">0</span>
+                    <span>/</span>
+                    <span id="total-pieces">0</span>
                 </div>
                 <button id="pause-game" class="pause-button">⏸️</button>
             </div>
             
             <div class="game-area">
-                <div id="puzzle-container"></div>
-                <div id="3d-scene"></div>
+                <div id="puzzle-board"></div>
+                <div id="pieces-area"></div>
             </div>
             
             <div class="game-controls">
                 <button id="hint-button" class="control-button">💡 Hint</button>
-                <button id="reset-level" class="control-button">🔄 Reset</button>
-                <button id="next-level" class="control-button">➡️ Next</button>
+                <button id="reset-puzzle" class="control-button">🔄 Reset</button>
+                <button id="next-puzzle" class="control-button">➡️ Next</button>
             </div>
         </div>
 
-        <!-- Level Complete Screen -->
-        <div id="level-complete" class="screen">
+        <!-- Puzzle Complete Screen -->
+        <div id="puzzle-complete" class="screen">
             <div class="complete-content">
-                <h2>🎉 Great Job, Rion! 🎉</h2>
-                <div class="stars-earned">
-                    <span class="star">⭐</span>
-                    <span class="star">⭐</span>
-                    <span class="star">⭐</span>
+                <h2>🎉 Amazing Job, Rion! 🎉</h2>
+                <div class="completed-puzzle">
+                    <div id="completed-image"></div>
                 </div>
-                <p class="completion-text">You solved the puzzle!</p>
+                <p class="completion-text">You completed the dinosaur puzzle!</p>
                 <div class="dino-reward">
                     <div class="reward-dino">🦖</div>
                     <p>New dinosaur unlocked!</p>
                 </div>
-                <button id="continue-game" class="game-button">Continue Adventure!</button>
+                <button id="continue-puzzling" class="game-button">Continue Puzzling!</button>
             </div>
         </div>
 
         <!-- Game Over Screen -->
         <div id="game-over" class="screen">
             <div class="game-over-content">
-                <h2>🦕 Don't Give Up! 🦖</h2>
-                <p>Let's try again together!</p>
-                <button id="restart-game" class="game-button">Try Again</button>
+                <h2>🦕 Keep Going! 🦖</h2>
+                <p>You're doing great! Let's try again!</p>
+                <button id="restart-puzzle" class="game-button">Try Again</button>
                 <button id="back-to-menu" class="game-button secondary">Back to Menu</button>
             </div>
         </div>
     </div>
 
     <!-- Audio Elements -->
-    <audio id="background-music" loop>
-        <source src="sounds/background.mp3" type="audio/mpeg">
+    <audio id="piece-snap" preload="auto">
+        <source src="sounds/snap.mp3" type="audio/mpeg">
     </audio>
-    <audio id="success-sound">
-        <source src="sounds/success.mp3" type="audio/mpeg">
+    <audio id="puzzle-complete-sound" preload="auto">
+        <source src="sounds/complete.mp3" type="audio/mpeg">
     </audio>
-    <audio id="click-sound">
+    <audio id="click-sound" preload="auto">
         <source src="sounds/click.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="game.js"></script>
 </body>
 </html>
