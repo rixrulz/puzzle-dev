@@ -100,13 +100,14 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Initialize Supabase - Replace with your actual values
-        const supabaseUrl = 'YOUR_SUPABASE_PROJECT_URL'
-        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'
+        // Initialize Supabase with actual project credentials
+        const supabaseUrl = 'https://bhkgxrqfulfpxwbvlpep.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJoa2d4cnFmdWxmcHh3YnZscGVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUyMzI5OTgsImV4cCI6MjA3MDgwODk5OH0.q61GjTRB8g6Ut15UEOFJKx_9ikSCdlw2V_Hh1Uu8ZTc'
         const supabase = supabase.createClient(supabaseUrl, supabaseKey)
         
         // Test connection
-        console.log('Supabase client initialized:', supabase)
+        console.log('Supabase client initialized successfully!')
+        console.log('Project URL:', supabaseUrl)
     </script>
 
     <!-- Scripts -->

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Connection Test - Rion's Puzzle</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .test-results { margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔗 Supabase Connection Test</h1>
+    <p>Testing connection to your Supabase project...</p>
+    
+    <div id="status"></div>
+    
+    <div class="test-results">
+        <h3>Test Results:</h3>
+        <div id="results"></div>
+    </div>
+    
+    <button onclick="testConnection()">Test Connection</button>
+    <button onclick="testDatabase()">Test Database Tables</button>
+    <button onclick="testStorage()">Test File Storage</button>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://bhkgxrqfulfpxwbvlpep.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJoa2d4cnFmdWxmcHh3YnZscGVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUyMzI5OTgsImV4cCI6MjA3MDgwODk5OH0.q61GjTRB8g6Ut15UEOFJKx_9ikSCdlw2V_Hh1Uu8ZTc'
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+        
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status')
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`
+        }
+        
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results')
+            const resultDiv = document.createElement('div')
+            resultDiv.className = `status ${type}`
+            resultDiv.textContent = message
+            resultsDiv.appendChild(resultDiv)
+        }
+        
+        async function testConnection() {
+            showStatus('Testing Supabase connection...', 'info')
+            
+            try {
+                // Test basic connection
+                const { data, error } = await supabase.from('game_progress').select('count').limit(1)
+                
+                if (error) {
+                    if (error.code === 'PGRST116') {
+                        showStatus('✅ Connection successful! Database tables not yet created.', 'success')
+                        addResult('✅ Supabase connection working', 'success')
+                        addResult('⚠️ Database tables need to be created (run the SQL from supabase-deploy-now.md)', 'info')
+                    } else {
+                        showStatus('❌ Database error: ' + error.message, 'error')
+                        addResult('❌ Database error: ' + error.message, 'error')
+                    }
+                } else {
+                    showStatus('✅ Connection successful! Database working.', 'success')
+                    addResult('✅ Supabase connection working', 'success')
+                    addResult('✅ Database tables accessible', 'success')
+                }
+            } catch (err) {
+                showStatus('❌ Connection failed: ' + err.message, 'error')
+                addResult('❌ Connection failed: ' + err.message, 'error')
+            }
+        }
+        
+        async function testDatabase() {
+            addResult('Testing database tables...', 'info')
+            
+            try {
+                // Test if tables exist
+                const { data, error } = await supabase.from('game_progress').select('*').limit(1)
+                
+                if (error) {
+                    if (error.code === 'PGRST116') {
+                        addResult('❌ Table "game_progress" does not exist', 'error')
+                        addResult('💡 Run the SQL commands from supabase-deploy-now.md in your SQL Editor', 'info')
+                    } else {
+                        addResult('❌ Database error: ' + error.message, 'error')
+                    }
+                } else {
+                    addResult('✅ Table "game_progress" exists and accessible', 'success')
+                }
+            } catch (err) {
+                addResult('❌ Database test failed: ' + err.message, 'error')
+            }
+        }
+        
+        async function testStorage() {
+            addResult('Testing file storage...', 'info')
+            
+            try {
+                // Test storage bucket access
+                const { data, error } = await supabase.storage.from('game-files').list('', { limit: 1 })
+                
+                if (error) {
+                    if (error.message.includes('bucket')) {
+                        addResult('❌ Storage bucket "game-files" does not exist', 'error')
+                        addResult('💡 Create the bucket in Storage section and upload your game files', 'info')
+                    } else {
+                        addResult('❌ Storage error: ' + error.message, 'error')
+                    }
+                } else {
+                    addResult('✅ Storage bucket "game-files" accessible', 'success')
+                    if (data && data.length > 0) {
+                        addResult(`✅ Found ${data.length} files in storage`, 'success')
+                    } else {
+                        addResult('⚠️ Storage bucket is empty - upload your game files', 'info')
+                    }
+                }
+            } catch (err) {
+                addResult('❌ Storage test failed: ' + err.message, 'error')
+            }
+        }
+        
+        // Auto-test connection on page load
+        window.onload = function() {
+            showStatus('Ready to test Supabase connection', 'info')
+        }
+    </script>
+</body>
+</html>
