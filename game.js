@@ -1,4 +1,4 @@
-// Rion's Dinosaur Puzzle - Real Jigsaw Game
+// Rion's Dinosaur Puzzle - Real Jigsaw Game with Supabase Integration
 class RionsPuzzle {
     constructor() {
         this.currentPuzzle = 1;
@@ -11,6 +11,8 @@ class RionsPuzzle {
         this.draggedPiece = null;
         this.snapDistance = 40; // Distance for pieces to snap together
         this.audioContext = null;
+        this.startTime = null;
+        this.userId = null;
         
         this.init();
     }
@@ -19,6 +21,122 @@ class RionsPuzzle {
         this.setupEventListeners();
         this.initAudio();
         this.loadPuzzle(this.currentPuzzle);
+        this.initSupabase();
+    }
+
+    async initSupabase() {
+        try {
+            // Check if user is authenticated
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                this.userId = user.id
+                console.log('User authenticated:', user.email)
+                await this.loadUserProgress()
+            } else {
+                console.log('No user authenticated - playing as guest')
+            }
+        } catch (error) {
+            console.error('Supabase init error:', error)
+        }
+    }
+
+    async loadUserProgress() {
+        if (!this.userId) return
+        
+        try {
+            const { data, error } = await supabase
+                .from('game_progress')
+                .select('*')
+                .eq('user_id', this.userId)
+                .order('completed_at', { ascending: false })
+            
+            if (error) {
+                console.error('Error loading progress:', error)
+            } else {
+                console.log('User progress loaded:', data)
+                // You can use this to show progress or unlock levels
+            }
+        } catch (error) {
+            console.error('Error loading user progress:', error)
+        }
+    }
+
+    async saveProgress(level, piecesPlaced, time, stars) {
+        if (!this.userId) {
+            console.log('No user authenticated - progress not saved')
+            return
+        }
+        
+        try {
+            const { data, error } = await supabase
+                .from('game_progress')
+                .insert([
+                    {
+                        user_id: this.userId,
+                        puzzle_level: level,
+                        pieces_placed: piecesPlaced,
+                        completion_time: time,
+                        stars_earned: stars
+                    }
+                ])
+            
+            if (error) {
+                console.error('Error saving progress:', error)
+            } else {
+                console.log('Progress saved to Supabase!', data)
+                await this.updateLeaderboard(level, time, stars)
+            }
+        } catch (error) {
+            console.error('Error saving progress:', error)
+        }
+    }
+
+    async updateLeaderboard(level, time, stars) {
+        if (!this.userId) return
+        
+        try {
+            const { data, error } = await supabase
+                .from('leaderboard')
+                .upsert([
+                    {
+                        user_id: this.userId,
+                        puzzle_level: level,
+                        best_time: time,
+                        total_stars: stars
+                    }
+                ])
+            
+            if (error) {
+                console.error('Error updating leaderboard:', error)
+            } else {
+                console.log('Leaderboard updated!', data)
+            }
+        } catch (error) {
+            console.error('Error updating leaderboard:', error)
+        }
+    }
+
+    async getLeaderboard() {
+        try {
+            const { data, error } = await supabase
+                .from('leaderboard')
+                .select(`
+                    *,
+                    users (username, email)
+                `)
+                .order('best_time', { ascending: true })
+                .limit(10)
+            
+            if (error) {
+                console.error('Error getting leaderboard:', error)
+                return []
+            } else {
+                return data || []
+            }
+        } catch (error) {
+            console.error('Error getting leaderboard:', error)
+            return []
+        }
     }
 
     initAudio() {
@@ -36,6 +154,7 @@ class RionsPuzzle {
             this.showScreen('game-screen');
             this.playSound('click-sound');
             this.createBalloons();
+            this.startTime = Date.now();
         });
 
         // Game controls
@@ -483,6 +602,13 @@ class RionsPuzzle {
         const board = document.getElementById('puzzle-board');
         board.classList.add('completed');
         
+        // Calculate completion time and stars
+        const completionTime = this.startTime ? Math.floor((Date.now() - this.startTime) / 1000) : 0;
+        const stars = this.calculateStars(completionTime);
+        
+        // Save progress to Supabase
+        this.saveProgress(this.currentPuzzle, this.totalPieces, completionTime, stars);
+        
         // Create celebration effects
         this.createCompletionCelebration();
         
@@ -495,6 +621,13 @@ class RionsPuzzle {
             const completedImage = document.getElementById('completed-image');
             completedImage.textContent = this.puzzleData.title;
         }, 2000);
+    }
+
+    calculateStars(time) {
+        // Award stars based on completion time
+        if (time < 60) return 3;      // Under 1 minute = 3 stars
+        if (time < 120) return 2;     // Under 2 minutes = 2 stars
+        return 1;                     // Over 2 minutes = 1 star
     }
 
     createCompletionCelebration() {
@@ -590,12 +723,14 @@ class RionsPuzzle {
     resetPuzzle() {
         this.loadPuzzle(this.currentPuzzle);
         this.showScreen('game-screen');
+        this.startTime = Date.now();
     }
 
     nextPuzzle() {
         this.currentPuzzle++;
         this.loadPuzzle(this.currentPuzzle);
         this.showScreen('game-screen');
+        this.startTime = Date.now();
     }
 
     togglePause() {

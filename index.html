@@ -97,6 +97,18 @@
         <source src="sounds/click.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase - Replace with your actual values
+        const supabaseUrl = 'YOUR_SUPABASE_PROJECT_URL'
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+        
+        // Test connection
+        console.log('Supabase client initialized:', supabase)
+    </script>
+
     <!-- Scripts -->
     <script src="game.js"></script>
 </body>
