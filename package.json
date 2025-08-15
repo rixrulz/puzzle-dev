@@ -1,0 +1,42 @@
+{
+  "name": "rions-puzzle",
+  "version": "1.0.0",
+  "description": "An educational puzzle game for 3-5 year olds featuring dinosaurs and 3D elements",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "build": "echo 'No build step required - pure HTML/CSS/JS'",
+    "deploy": "echo 'Deploy to any static hosting service'"
+  },
+  "keywords": [
+    "educational",
+    "puzzle",
+    "game",
+    "children",
+    "dinosaurs",
+    "3d",
+    "learning",
+    "preschool"
+  ],
+  "author": "Rion's Family",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/rions-puzzle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/rions-puzzle/issues"
+  },
+  "homepage": "https://yourusername.github.io/rions-puzzle",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

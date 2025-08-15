@@ -1,0 +1,402 @@
+/* Rion's Puzzle - Beautiful Child-Friendly Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Neue', cursive;
+    background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFB6C1 100%);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+/* Screen Management */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFB6C1 100%);
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Welcome Screen */
+.welcome-content {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    animation: bounceIn 1s ease-out;
+}
+
+.game-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3.5rem;
+    color: #FF6B6B;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 0px #FFE66D;
+    animation: rainbow 3s infinite;
+}
+
+.dino-character {
+    margin: 30px 0;
+}
+
+.dino-sprite {
+    font-size: 5rem;
+    animation: bounce 2s infinite;
+}
+
+.character-name {
+    font-size: 1.5rem;
+    color: #4ECDC4;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.welcome-text {
+    font-size: 1.3rem;
+    color: #2C3E50;
+    margin: 20px 0;
+}
+
+.game-button {
+    background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin: 10px;
+}
+
+.game-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.game-button.secondary {
+    background: linear-gradient(45deg, #95A5A6, #7F8C8D);
+}
+
+.instructions {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.instructions h3 {
+    color: #2C3E50;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.instructions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.instructions li {
+    padding: 8px 0;
+    color: #34495E;
+    font-size: 1.1rem;
+}
+
+/* Game Screen */
+.game-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.level-info, .score-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: #2C3E50;
+}
+
+.level-label, .score-label {
+    color: #7F8C8D;
+}
+
+#current-level, #current-score {
+    color: #E74C3C;
+    font-size: 1.2rem;
+}
+
+.pause-button {
+    background: #FF6B6B;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.pause-button:hover {
+    background: #E74C3C;
+    transform: scale(1.1);
+}
+
+.game-area {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: relative;
+}
+
+#puzzle-container {
+    flex: 1;
+    padding: 80px 20px 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#3d-scene {
+    flex: 1;
+    background: linear-gradient(45deg, #2C3E50, #34495E);
+    position: relative;
+}
+
+.game-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.control-button {
+    background: linear-gradient(45deg, #3498DB, #2980B9);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.control-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Puzzle Elements */
+.puzzle-piece {
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    border-radius: 15px;
+    cursor: grab;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.puzzle-piece:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.puzzle-piece.dragging {
+    transform: scale(1.2);
+    z-index: 1000;
+}
+
+.puzzle-slot {
+    width: 90px;
+    height: 90px;
+    border: 3px dashed #95A5A6;
+    border-radius: 15px;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.puzzle-slot.filled {
+    border-color: #27AE60;
+    background: rgba(39, 174, 96, 0.2);
+}
+
+.puzzle-slot.correct {
+    border-color: #F39C12;
+    background: rgba(243, 156, 18, 0.2);
+    animation: pulse 1s infinite;
+}
+
+/* Level Complete Screen */
+.complete-content {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    animation: slideInUp 0.8s ease-out;
+}
+
+.stars-earned {
+    margin: 20px 0;
+    font-size: 2rem;
+}
+
+.star {
+    animation: twinkle 1.5s infinite;
+    margin: 0 5px;
+}
+
+.reward-dino {
+    font-size: 4rem;
+    margin: 20px 0;
+    animation: bounce 2s infinite;
+}
+
+/* Game Over Screen */
+.game-over-content {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    animation: shake 0.8s ease-out;
+}
+
+/* Animations */
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideInUp {
+    from { transform: translateY(100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    60% { transform: translateY(-10px); }
+}
+
+@keyframes rainbow {
+    0% { color: #FF6B6B; }
+    25% { color: #4ECDC4; }
+    50% { color: #45B7D1; }
+    75% { color: #96CEB4; }
+    100% { color: #FF6B6B; }
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.5rem;
+    }
+    
+    .welcome-content {
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .puzzle-piece {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .puzzle-slot {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* Drag and Drop Styles */
+.dragging {
+    opacity: 0.8;
+    transform: rotate(5deg);
+}
+
+.drag-over {
+    background: rgba(52, 152, 219, 0.3);
+    border-color: #3498DB;
+}
+
+/* Success Animation */
+.success-flash {
+    animation: successFlash 0.5s ease-out;
+}
+
+@keyframes successFlash {
+    0% { background: rgba(39, 174, 96, 0.8); }
+    100% { background: rgba(39, 174, 96, 0.2); }
+}
